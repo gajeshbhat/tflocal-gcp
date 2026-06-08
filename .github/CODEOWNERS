@@ -1,0 +1,5 @@
+# All files — default reviewer for every PR.
+* @gajeshbhat
+
+# Workflow files require extra care (SHA pinning, permissions).
+.github/workflows/ @gajeshbhat

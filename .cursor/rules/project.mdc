@@ -1,0 +1,11 @@
+---
+description: tflocal-gcp project guide and conventions
+alwaysApply: true
+---
+
+The authoritative project guide is `AGENTS.md` at the repository root.
+
+Read it for the architecture, module map, conventions, build/test commands, and
+service support policy. Follow it for all work in this repository:
+
+@AGENTS.md

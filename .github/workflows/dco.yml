@@ -1,0 +1,38 @@
+name: DCO
+
+# Verifies every commit in a pull request carries a `Signed-off-by` trailer
+# (the Developer Certificate of Origin). Add it with `git commit -s`.
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  dco:
+    name: Check sign-off
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          fetch-depth: 0
+
+      - name: Verify Signed-off-by on all PR commits
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          missing=0
+          for commit in $(git rev-list "$BASE_SHA".."$HEAD_SHA"); do
+            if ! git log -1 --format=%B "$commit" | grep -q "^Signed-off-by: .* <.*@.*>$"; then
+              subject=$(git log -1 --format=%s "$commit")
+              echo "::error::Commit $commit ($subject) is missing a Signed-off-by line. Run 'git commit -s' or 'git rebase --signoff'."
+              missing=1
+            fi
+          done
+          if [ "$missing" -ne 0 ]; then
+            echo "One or more commits are missing the DCO sign-off."
+            exit 1
+          fi
+          echo "All commits are signed off."
